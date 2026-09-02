@@ -2,6 +2,8 @@ import 'server-only'
 
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
+import type { Database } from '@/types/database'
+
 export function createAdminClient() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const secretKey = process.env.SUPABASE_SECRET_KEY
@@ -10,7 +12,7 @@ export function createAdminClient() {
     throw new Error('Missing private Supabase environment variables')
   }
 
-  return createSupabaseClient(url, secretKey, {
+  return createSupabaseClient<Database>(url, secretKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,
