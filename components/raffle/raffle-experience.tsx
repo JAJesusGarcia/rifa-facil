@@ -8,6 +8,7 @@ import { PrizeShowcase } from '@/components/raffle/prize-showcase'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/types/database'
+import { ReservationForm } from '@/components/raffle/reservation-form'
 
 type Raffle = Pick<
   Database['public']['Tables']['raffles']['Row'],
@@ -111,10 +112,15 @@ export function RaffleExperience({
 
   const progress = Math.round((paidCount / raffle.total_numbers) * 100)
 
+  const bundleQuantity = Math.max(1, raffle.bundle_quantity)
+
+  const completeBundles = Math.floor(selectedNumbers.length / bundleQuantity)
+
+  const remainingNumbers = selectedNumbers.length % bundleQuantity
+
   const total =
-    selectedNumbers.length === raffle.bundle_quantity
-      ? Number(raffle.bundle_price)
-      : selectedNumbers.length * Number(raffle.number_price)
+    completeBundles * Number(raffle.bundle_price) +
+    remainingNumbers * Number(raffle.number_price)
 
   const formattedTotal = currencyFormatter.format(total)
   const formattedNumberPrice = currencyFormatter.format(
@@ -409,6 +415,13 @@ export function RaffleExperience({
                 {formattedTotal}
               </p>
             </div>
+            <ReservationForm
+              raffleId={raffle.id}
+              selectedNumbers={selectedNumbers}
+              total={total}
+              currency={raffle.currency}
+              paymentAlias={raffle.payment_alias}
+            />
           </div>
         </section>
 
