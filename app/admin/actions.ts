@@ -15,7 +15,15 @@ const loginSchema = z.object({
 const reservationIdSchema = z.string().uuid()
 
 function adminUrl(type: 'success' | 'error', message: string) {
-  return `/admin?${type}=${encodeURIComponent(message)}`
+  const params = new URLSearchParams({
+    [type]: message,
+  })
+
+  if (type === 'success') {
+    params.set('notification', crypto.randomUUID())
+  }
+
+  return `/admin?${params.toString()}`
 }
 
 async function userOwnsReservation(reservationId: string) {

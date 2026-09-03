@@ -48,6 +48,7 @@ interface AdminPageProps {
     error?: string
     status?: string
     toast?: string
+    notification?: string
   }>
 }
 
@@ -385,7 +386,11 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
   return (
     <main className="raffle-pastel min-h-screen px-4 py-6 text-white sm:px-6">
-      <AuthToast message={params.toast} />
+      <AuthToast
+        key={params.notification ?? params.toast ?? params.success}
+        message={params.toast ?? params.success}
+        queryParam={params.toast ? 'toast' : 'success'}
+      />
       <div className="mx-auto w-full max-w-6xl">
         <header className="flex flex-col gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
@@ -423,11 +428,11 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           </div>
         </header>
 
-        {params.success ? (
+        {/* {params.success ? (
           <p className="mt-5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-3 text-sm text-emerald-300">
             {params.success}
           </p>
-        ) : null}
+        ) : null} */}
 
         {params.error ? (
           <p className="mt-5 rounded-xl border border-red-500/25 bg-red-500/10 p-3 text-sm text-red-300">

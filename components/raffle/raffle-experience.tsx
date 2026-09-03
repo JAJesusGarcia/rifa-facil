@@ -200,9 +200,9 @@ export function RaffleExperience({
 
               <div className="relative">
                 <div className="mb-6 flex items-center gap-4">
-                  <div className="relative size-16 shrink-0 overflow-hidden rounded-full border-2 border-red-500/60 bg-zinc-800 shadow-lg shadow-red-950/40 sm:size-20">
+                  <div className="relative size-16 shrink-0 overflow-hidden rounded-full border-2 border-red-500/60 bg-zinc-800 shadow-lg shadow-red-950/40 sm:size-25">
                     <Image
-                      src="/images/alondra.png"
+                      src="/images/alondra2.png"
                       alt={`Foto de ${raffle.organizer_name}`}
                       fill
                       priority
