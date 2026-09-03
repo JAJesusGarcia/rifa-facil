@@ -232,7 +232,11 @@ export function RaffleExperience({
                 </h1>
 
                 <p className="mt-4 max-w-xl text-base leading-7 text-zinc-300">
-                  {raffle.prize_description}
+                  La persona ganadora podrá elegir una Essen de hasta{' '}
+                  <strong className="font-black text-[#b84b63]">
+                    $1.000.000
+                  </strong>
+                  .
                 </p>
 
                 <div className="mt-6 grid grid-cols-2 gap-3">
