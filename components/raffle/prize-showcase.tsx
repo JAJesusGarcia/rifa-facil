@@ -29,7 +29,7 @@ const prizes = [
 
 export function PrizeShowcase() {
   return (
-    <div className="h-full min-w-0 overflow-hidden bg-gradient-to-br from-[#211416] via-[#171719] to-[#101012] p-5 sm:p-6">
+    <div className="h-full min-w-0 overflow-hidden">
       <div className="mb-5">
         <p className="text-sm font-bold tracking-[0.18em] text-red-400 uppercase">
           Elegí tu premio

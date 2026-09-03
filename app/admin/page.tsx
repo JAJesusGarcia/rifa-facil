@@ -228,7 +228,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     }).format(amount)
 
   return (
-    <main className="min-h-screen bg-[#0b0b0d] px-4 py-6 text-white sm:px-6">
+    <main className="raffle-pastel min-h-screen px-4 py-6 text-white sm:px-6">
       <div className="mx-auto w-full max-w-6xl">
         <header className="flex flex-col gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
