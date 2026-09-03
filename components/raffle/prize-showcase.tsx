@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { PrizeImageViewer } from '@/components/raffle/prize-image-viewer'
 
 const prizes = [
   {
@@ -47,21 +47,13 @@ export function PrizeShowcase() {
         {prizes.map((prize) => (
           <article
             key={prize.number}
-            className="group flex w-[82%] max-w-[260px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] sm:w-[260px] md:w-auto md:max-w-none md:min-w-0 md:snap-none"
+            className="flex w-[82%] max-w-[260px] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] sm:w-[260px] md:w-auto md:max-w-none md:min-w-0 md:snap-none"
           >
-            <div className="relative h-36 shrink-0 overflow-hidden bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.14),_rgba(255,255,255,0.02)_70%)] sm:h-40">
-              <Image
-                src={prize.image}
-                alt={prize.name}
-                fill
-                className="object-contain p-3 transition-transform duration-300 group-hover:scale-105"
-                sizes="(max-width: 639px) 75vw, (max-width: 767px) 260px, 220px"
-              />
-
-              <span className="absolute top-3 left-3 rounded-full border border-red-400/25 bg-black/70 px-2.5 py-1 text-xs font-black text-red-300 backdrop-blur">
-                Opción {prize.number}
-              </span>
-            </div>
+            <PrizeImageViewer
+              src={prize.image}
+              alt={prize.name}
+              option={prize.number}
+            />
 
             <div className="flex flex-1 flex-col p-4">
               <h3 className="text-base font-bold text-white">{prize.name}</h3>

@@ -341,10 +341,9 @@ export function RaffleExperience({
 
             <div className="flex flex-wrap gap-3 text-xs text-zinc-400">
               <span className="flex items-center gap-1.5">
-                <span className="size-2.5 rounded-full bg-emerald-400" />
+                <span className="size-2.5 rounded-full border border-[#d9aeb9] bg-[#fff8fa]" />
                 Disponible
               </span>
-
               <span className="flex items-center gap-1.5">
                 <span className="size-2.5 rounded-full bg-amber-400" />
                 Reservado
@@ -377,7 +376,7 @@ export function RaffleExperience({
                       ? 'scale-95 border-red-400 bg-red-500 text-white shadow-lg shadow-red-950/50'
                       : '',
                     isAvailable && !isSelected
-                      ? 'border-white/10 bg-white/5 text-zinc-100 hover:-translate-y-0.5 hover:border-emerald-400/60 hover:bg-emerald-400/10'
+                      ? 'border-white/10 bg-white/5 text-zinc-100 hover:-translate-y-0.5 hover:border-[#d86480]/60 hover:bg-[#f7dce3]'
                       : '',
                     !isAvailable && !isPaid
                       ? 'cursor-not-allowed border-amber-500/15 bg-amber-500/10 text-amber-500/60'
