@@ -135,7 +135,7 @@ html {
 
 body {
   min-height: 100vh;
-  background: #0b0b0d;
+  background: #ffe5f0;
 }
 
 button {
@@ -143,98 +143,118 @@ button {
 }
 
 ::selection {
-  background: rgba(239, 68, 68, 0.45);
-  color: white;
+  background: rgba(197, 148, 170, 0.55);
+  color: #4d2f3b;
 }
 
-/* Tema público de la rifa inspirado en el flyer de Alondra */
+/* Tema pastel de la rifa basado en la paleta elegida por Alondra */
 .raffle-pastel {
-  color: #442b33 !important;
+  --raffle-rose-deep: #8f6277;
+  --raffle-rose-medium: #c594aa;
+  --raffle-rose-main: #fdcae1;
+  --raffle-rose-soft: #ffe5f0;
+  --raffle-ink: #4d2f3b;
+
+  color: var(--raffle-ink) !important;
   background:
     radial-gradient(
       circle at top right,
-      rgba(239, 190, 201, 0.32),
+      rgba(197, 148, 170, 0.28),
       transparent 32rem
     ),
-    linear-gradient(180deg, #fffafb 0%, #fceff2 55%, #f9e7ec 100%);
+    linear-gradient(
+      180deg,
+      #fffafd 0%,
+      var(--raffle-rose-soft) 58%,
+      var(--raffle-rose-main) 100%
+    );
 }
 
 .raffle-pastel .bg-zinc-900 {
-  background-color: rgba(255, 255, 255, 0.92) !important;
+  background-color: rgba(255, 255, 255, 0.94) !important;
 }
 
 .raffle-pastel [class~='bg-zinc-900/80'] {
-  background-color: rgba(255, 255, 255, 0.82) !important;
+  background-color: rgba(255, 255, 255, 0.86) !important;
+}
+
+.raffle-pastel [class~='bg-zinc-900/50'] {
+  background-color: rgba(255, 255, 255, 0.72) !important;
 }
 
 .raffle-pastel [class~='bg-black/30'] {
-  background-color: rgba(255, 248, 250, 0.88) !important;
+  background-color: rgba(255, 248, 252, 0.9) !important;
 }
 
 .raffle-pastel [class~='bg-white/5'],
 .raffle-pastel [class~='bg-white/[0.04]'] {
-  background-color: rgba(242, 209, 218, 0.34) !important;
+  background-color: rgba(253, 202, 225, 0.42) !important;
+}
+
+.raffle-pastel [class~='bg-red-500/10'],
+.raffle-pastel [class~='bg-red-500/20'] {
+  background-color: rgba(253, 202, 225, 0.58) !important;
 }
 
 .raffle-pastel [class~='border-white/10'],
 .raffle-pastel [class~='border-white/15'] {
-  border-color: rgba(151, 77, 95, 0.2) !important;
+  border-color: rgba(143, 98, 119, 0.25) !important;
+}
+
+.raffle-pastel [class~='border-red-500/20'],
+.raffle-pastel [class~='border-red-500/25'],
+.raffle-pastel [class~='border-red-500/30'],
+.raffle-pastel [class~='border-red-500/60'] {
+  border-color: rgba(143, 98, 119, 0.42) !important;
 }
 
 .raffle-pastel .text-white:not(button) {
-  color: #3f2830 !important;
+  color: var(--raffle-ink) !important;
 }
 
 .raffle-pastel .text-zinc-100,
 .raffle-pastel .text-zinc-200,
 .raffle-pastel .text-zinc-300 {
-  color: #553941 !important;
+  color: #593745 !important;
 }
 
 .raffle-pastel .text-zinc-400 {
-  color: #795d65 !important;
+  color: #765364 !important;
 }
 
 .raffle-pastel .text-zinc-500 {
-  color: #92747d !important;
+  color: #8f6b7b !important;
 }
 
 .raffle-pastel .text-zinc-600 {
-  color: #a4868e !important;
+  color: #a58392 !important;
 }
 
 .raffle-pastel .text-red-400 {
-  color: #c6536c !important;
+  color: var(--raffle-rose-deep) !important;
 }
 
 .raffle-pastel .text-red-300 {
-  color: #b84b63 !important;
+  color: #7b5064 !important;
 }
 
 .raffle-pastel .text-red-200 {
-  color: #934457 !important;
+  color: #694254 !important;
 }
 
-.raffle-pastel .bg-red-600 {
-  background-color: #c6536c !important;
-}
-
+.raffle-pastel .bg-red-600,
 .raffle-pastel .bg-red-500 {
-  background-color: #d9657e !important;
+  background-color: var(--raffle-rose-deep) !important;
 }
 
 .raffle-pastel [class~='hover:bg-red-500']:hover {
-  background-color: #b94660 !important;
+  background-color: #7b5064 !important;
 }
 
 .raffle-pastel input {
-  color: #442b33;
+  color: var(--raffle-ink);
 }
 
 .raffle-pastel input::placeholder {
-  color: #a98c94;
-}
-
-.raffle-pastel [class~='bg-zinc-900/50'] {
-  background-color: rgba(255, 255, 255, 0.68) !important;
+  color: #a58392;
 }

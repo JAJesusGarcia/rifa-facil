@@ -261,7 +261,7 @@ export function RaffleExperience({
                           fill
                           className="object-cover"
                           style={{
-                            objectPosition: '50% 35%',
+                            objectPosition: '50% 15%',
                           }}
                           sizes="(max-width: 639px) 80px, 96px"
                         />
