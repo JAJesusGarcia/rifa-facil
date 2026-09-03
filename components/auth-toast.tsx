@@ -5,9 +5,10 @@ import { Check, X } from 'lucide-react'
 
 interface AuthToastProps {
   message?: string
+  queryParam?: string
 }
 
-export function AuthToast({ message }: AuthToastProps) {
+export function AuthToast({ message, queryParam = 'toast' }: AuthToastProps) {
   const [isVisible, setIsVisible] = useState(Boolean(message))
 
   useEffect(() => {
@@ -16,7 +17,8 @@ export function AuthToast({ message }: AuthToastProps) {
     }
 
     const url = new URL(window.location.href)
-    url.searchParams.delete('toast')
+    url.searchParams.delete(queryParam)
+    url.searchParams.delete('notification')
 
     const cleanUrl = `${url.pathname}${url.search}${url.hash}`
 
@@ -29,7 +31,7 @@ export function AuthToast({ message }: AuthToastProps) {
     return () => {
       window.clearTimeout(timeout)
     }
-  }, [message])
+  }, [message, queryParam])
 
   if (!message || !isVisible) {
     return null
