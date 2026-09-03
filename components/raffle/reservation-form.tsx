@@ -134,7 +134,7 @@ export function ReservationForm({
             <Button
               type="button"
               variant="outline"
-              className="mt-4 border-white/15 bg-transparent text-white hover:bg-white/10"
+              className="mt-4 border-[#c995a3] bg-white/80 text-[#5f3440] shadow-sm hover:border-[#ba7385] hover:bg-[#f8dfe6] hover:text-[#4b2630]"
               onClick={() => setResult(null)}
             >
               Hacer otra reserva

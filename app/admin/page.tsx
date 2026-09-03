@@ -26,6 +26,8 @@ import {
 
 type ReservationStatus = Database['public']['Enums']['reservation_status']
 
+type ReservationFilter = 'all' | 'pending' | 'paid' | 'rejected'
+
 type PaymentProof = {
   storage_path: string
   original_filename: string
@@ -43,6 +45,7 @@ interface AdminPageProps {
   searchParams: Promise<{
     success?: string
     error?: string
+    status?: string
   }>
 }
 
@@ -64,13 +67,65 @@ const statusPriority: Record<ReservationStatus, number> = {
   cancelled: 5,
 }
 
+const emptyStateMessages: Record<
+  ReservationFilter,
+  {
+    title: string
+    description: string
+  }
+> = {
+  all: {
+    title: 'Todavía no hay reservas',
+    description: 'Las nuevas solicitudes aparecerán en este panel.',
+  },
+  pending: {
+    title: 'No hay reservas pendientes',
+    description: 'No quedan pagos o solicitudes por revisar.',
+  },
+  paid: {
+    title: 'Todavía no hay ventas confirmadas',
+    description: 'Las reservas confirmadas aparecerán en esta sección.',
+  },
+  rejected: {
+    title: 'No hay reservas rechazadas',
+    description: 'Las reservas que rechaces aparecerán en esta sección.',
+  },
+}
+
+function getReservationFilter(status?: string): ReservationFilter {
+  if (status === 'pending' || status === 'paid' || status === 'rejected') {
+    return status
+  }
+
+  return 'all'
+}
+
+function matchesReservationFilter(
+  status: ReservationStatus,
+  filter: ReservationFilter,
+) {
+  if (filter === 'all') {
+    return true
+  }
+
+  if (filter === 'pending') {
+    return status === 'pending' || status === 'held'
+  }
+
+  return status === filter
+}
+
 function getStatusClasses(status: ReservationStatus) {
   if (status === 'paid') {
-    return 'border-emerald-500/20 bg-emerald-500/10 text-emerald-300'
+    return 'border-[#78c9af] bg-[#dff5ee] text-[#17664f]'
   }
 
   if (status === 'pending' || status === 'held') {
     return 'border-amber-500/20 bg-amber-500/10 text-amber-300'
+  }
+
+  if (status === 'rejected') {
+    return 'border-red-500/20 bg-red-500/10 text-red-300'
   }
 
   return 'border-zinc-500/20 bg-zinc-500/10 text-zinc-400'
@@ -98,8 +153,61 @@ function formatDate(date: string) {
   }).format(new Date(date))
 }
 
+function formatNumberList(numbers: number[]) {
+  const formattedNumbers = numbers.map(formatNumber)
+
+  if (formattedNumbers.length <= 1) {
+    return formattedNumbers[0] ?? ''
+  }
+
+  return `${formattedNumbers.slice(0, -1).join(', ')} y ${
+    formattedNumbers.at(-1) ?? ''
+  }`
+}
+
+function normalizeWhatsAppNumber(phone: string) {
+  let digits = phone.replace(/\D/g, '')
+
+  if (digits.startsWith('00')) {
+    digits = digits.slice(2)
+  }
+
+  if (digits.startsWith('549')) {
+    return digits
+  }
+
+  if (digits.startsWith('54')) {
+    return `549${digits.slice(2)}`
+  }
+
+  digits = digits.replace(/^0/, '')
+
+  return `549${digits}`
+}
+
+function getWhatsAppUrl(reservation: DashboardReservation, numbers: number[]) {
+  const formattedNumbers = formatNumberList(numbers)
+  let message: string
+
+  if (reservation.status === 'paid') {
+    message = `Hola ${reservation.customer_name} 👋 ¡Muchas gracias por participar en mi rifa! Tu pago quedó confirmado para los números ${formattedNumbers}. ¡Mucha suerte! 🍀`
+  } else if (reservation.status === 'rejected') {
+    message = `Hola ${reservation.customer_name} 👋 Te escribo por tu reserva de la rifa. No pude confirmar el pago de los números ${formattedNumbers}. Si querés, escribime y lo revisamos.`
+  } else if (reservation.payment_method === 'cash') {
+    message = `Hola ${reservation.customer_name} 👋 Tenés reservados los números ${formattedNumbers}. Coordinemos el pago en efectivo para confirmar tu participación.`
+  } else {
+    message = `Hola ${reservation.customer_name} 👋 Tenés reservados los números ${formattedNumbers}. Cuando puedas, enviame el comprobante para confirmar tu participación.`
+  }
+
+  const phone = normalizeWhatsAppNumber(reservation.customer_whatsapp)
+
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`
+}
+
 export default async function AdminPage({ searchParams }: AdminPageProps) {
   const params = await searchParams
+  const activeFilter = getReservationFilter(params.status)
+
   const supabase = await createClient()
 
   const {
@@ -177,10 +285,27 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     )
   })
 
+  const reservedReservationsCount = reservations.filter(
+    (reservation) =>
+      reservation.status === 'pending' || reservation.status === 'held',
+  ).length
+
+  const paidReservationsCount = reservations.filter(
+    (reservation) => reservation.status === 'paid',
+  ).length
+
+  const rejectedReservationsCount = reservations.filter(
+    (reservation) => reservation.status === 'rejected',
+  ).length
+
+  const filteredReservations = reservations.filter((reservation) =>
+    matchesReservationFilter(reservation.status, activeFilter),
+  )
+
   const admin = createAdminClient()
 
   const reservationsWithProofs = await Promise.all(
-    reservations.map(async (reservation) => {
+    filteredReservations.map(async (reservation) => {
       const proof = getPaymentProof(reservation.payment_proofs)
 
       if (!proof) {
@@ -220,6 +345,35 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       reservation.status === 'pending' || reservation.status === 'held',
   ).length
 
+  const filterOptions: Array<{
+    value: ReservationFilter
+    label: string
+    count: number
+  }> = [
+    {
+      value: 'all',
+      label: 'Todos',
+      count: reservations.length,
+    },
+    {
+      value: 'pending',
+      label: 'Reservados',
+      count: reservedReservationsCount,
+    },
+    {
+      value: 'paid',
+      label: 'Vendidos',
+      count: paidReservationsCount,
+    },
+    {
+      value: 'rejected',
+      label: 'Rechazados',
+      count: rejectedReservationsCount,
+    },
+  ]
+
+  const emptyState = emptyStateMessages[activeFilter]
+
   const formatCurrency = (amount: number) =>
     new Intl.NumberFormat('es-AR', {
       style: 'currency',
@@ -238,6 +392,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
             <div>
               <h1 className="text-xl font-black">Panel de la rifa</h1>
+
               <p className="text-sm text-zinc-400">
                 {raffles[0]?.title ?? 'Sin rifas'}
               </p>
@@ -278,22 +433,25 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
         ) : null}
 
         <section className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <div className="rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4">
-            <p className="text-sm text-amber-200">Por revisar</p>
-            <strong className="mt-1 block text-3xl text-amber-400">
+          <div className="rounded-2xl border border-[#e5b36a] bg-[#fff1dc] p-4">
+            <p className="text-sm font-semibold text-[#7b4b10]">Por revisar</p>
+
+            <strong className="mt-1 block text-3xl text-[#b56300]">
               {pendingCount}
             </strong>
           </div>
 
-          <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4">
-            <p className="text-sm text-emerald-200">Disponibles</p>
-            <strong className="mt-1 block text-3xl text-emerald-400">
+          <div className="rounded-2xl border border-[#e4c0c9] bg-[#fff8fa] p-4">
+            <p className="text-sm text-[#75434f]">Disponibles</p>
+
+            <strong className="mt-1 block text-3xl text-[#9b5364]">
               {availableCount}
             </strong>
           </div>
 
           <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-4">
             <p className="text-sm text-red-200">Vendidos</p>
+
             <strong className="mt-1 block text-3xl text-red-400">
               {paidCount}
             </strong>
@@ -301,14 +459,59 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
           <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
             <p className="text-sm text-zinc-400">Reservados</p>
+
             <strong className="mt-1 block text-3xl">{reservedCount}</strong>
           </div>
         </section>
 
         <section className="mt-8">
-          <div>
-            <p className="text-sm font-semibold text-red-400">Administración</p>
-            <h2 className="mt-1 text-2xl font-black">Reservas y pagos</h2>
+          <div className="flex flex-col gap-5">
+            <div>
+              <p className="text-sm font-semibold text-red-400">
+                Administración
+              </p>
+
+              <h2 className="mt-1 text-2xl font-black">Reservas y pagos</h2>
+            </div>
+
+            <nav
+              aria-label="Filtrar reservas"
+              className="flex max-w-full [scrollbar-width:none] gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden"
+            >
+              {filterOptions.map((option) => {
+                const isActive = option.value === activeFilter
+
+                const href =
+                  option.value === 'all'
+                    ? '/admin'
+                    : `/admin?status=${option.value}`
+
+                return (
+                  <Link
+                    key={option.value}
+                    href={href}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`inline-flex min-w-max items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-bold transition ${
+                      isActive
+                        ? 'border-[#d86983] bg-[#d86983] text-white shadow-sm'
+                        : 'border-[#e4c0c9] bg-white/60 text-[#68404a] hover:border-[#d99bad] hover:bg-[#f9e6eb]'
+                    }`}
+                  >
+                    {option.label}
+
+                    <span
+                      className={`inline-flex min-w-6 items-center justify-center rounded-full px-1.5 py-0.5 text-xs ${
+                        isActive
+                          ? 'bg-white/20 text-white'
+                          : 'bg-[#f3dce2] text-[#7c4a57]'
+                      }`}
+                    >
+                      {option.count}
+                    </span>
+                  </Link>
+                )
+              })}
+            </nav>
           </div>
 
           {reservationsWithProofs.length === 0 ? (
@@ -319,11 +522,11 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               />
 
               <p className="mt-3 font-semibold text-zinc-300">
-                Todavía no hay reservas
+                {emptyState.title}
               </p>
 
               <p className="mt-1 text-sm text-zinc-500">
-                Las nuevas solicitudes aparecerán en este panel.
+                {emptyState.description}
               </p>
             </div>
           ) : (
@@ -332,6 +535,8 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                 const numbers = reservation.reservation_numbers
                   .map((item) => item.number)
                   .sort((first, second) => first - second)
+
+                const whatsappUrl = getWhatsAppUrl(reservation, numbers)
 
                 const canConfirm = reservation.status === 'pending'
 
@@ -361,10 +566,21 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                         </div>
 
                         <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-400">
-                          <span className="flex items-center gap-2">
+                          <a
+                            href={whatsappUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Abrir conversación en WhatsApp"
+                            aria-label={`Hablar con ${reservation.customer_name} por WhatsApp`}
+                            className="flex items-center gap-2 font-medium text-[#8b5361] underline-offset-4 transition hover:text-[#c65370] hover:underline"
+                          >
                             <Phone className="size-4" aria-hidden="true" />
                             {reservation.customer_whatsapp}
-                          </span>
+                            <ExternalLink
+                              className="size-3"
+                              aria-hidden="true"
+                            />
+                          </a>
 
                           <span className="flex items-center gap-2">
                             {reservation.payment_method === 'transfer' ? (
@@ -390,6 +606,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
                       <div className="lg:text-right">
                         <p className="text-sm text-zinc-500">Importe</p>
+
                         <p className="text-2xl font-black text-red-400">
                           {formatCurrency(Number(reservation.total_amount))}
                         </p>
