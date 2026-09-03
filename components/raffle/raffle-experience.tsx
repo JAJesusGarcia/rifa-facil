@@ -8,6 +8,7 @@ import { PrizeShowcase } from '@/components/raffle/prize-showcase'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import type { Database } from '@/types/database'
+import { ReservationForm } from '@/components/raffle/reservation-form'
 
 type Raffle = Pick<
   Database['public']['Tables']['raffles']['Row'],
@@ -414,6 +415,13 @@ export function RaffleExperience({
                 {formattedTotal}
               </p>
             </div>
+            <ReservationForm
+              raffleId={raffle.id}
+              selectedNumbers={selectedNumbers}
+              total={total}
+              currency={raffle.currency}
+              paymentAlias={raffle.payment_alias}
+            />
           </div>
         </section>
 
