@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
@@ -7,14 +5,15 @@ import type { Database } from '@/types/database'
 
 export async function createClient() {
   const cookieStore = await cookies()
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const publishableKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabasePublishableKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
 
-  if (!url || !publishableKey) {
-    throw new Error('Missing public Supabase environment variables')
+  if (!supabaseUrl || !supabasePublishableKey) {
+    throw new Error('Missing Supabase environment variables')
   }
 
-  return createServerClient<Database>(url, publishableKey, {
+  return createServerClient<Database>(supabaseUrl, supabasePublishableKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll()
@@ -25,8 +24,7 @@ export async function createClient() {
             cookieStore.set(name, value, options)
           })
         } catch {
-          // Los Server Components no siempre permiten modificar cookies.
-          // El proxy de autenticación se encargará de renovarlas.
+          // En Server Components las cookies se actualizan desde proxy.ts.
         }
       },
     },
