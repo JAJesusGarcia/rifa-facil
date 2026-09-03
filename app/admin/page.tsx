@@ -18,6 +18,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/types/database'
 import { AuthToast } from '@/components/auth-toast'
+import { PushNotificationButton } from '@/components/admin/push-notification-button'
 
 import {
   confirmReservationAction,
@@ -428,11 +429,19 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           </div>
         </header>
 
-        {/* {params.success ? (
-          <p className="mt-5 rounded-xl border border-emerald-500/25 bg-emerald-500/10 p-3 text-sm text-emerald-300">
-            {params.success}
-          </p>
-        ) : null} */}
+        <section className="mt-5 flex flex-col gap-3 rounded-2xl border border-[#e4c0c9] bg-white/60 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-bold text-[#542f38]">
+              Avisos de nuevas reservas
+            </p>
+
+            <p className="mt-1 text-sm text-[#80535e]">
+              Recibí una notificación cuando alguien reserve números.
+            </p>
+          </div>
+
+          <PushNotificationButton />
+        </section>
 
         {params.error ? (
           <p className="mt-5 rounded-xl border border-red-500/25 bg-red-500/10 p-3 text-sm text-red-300">
