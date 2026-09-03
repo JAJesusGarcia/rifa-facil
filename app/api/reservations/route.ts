@@ -1,7 +1,8 @@
-import { after, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { z } from 'zod'
-import { createAdminClient } from '@/lib/supabase/admin'
+
 import { sendNewReservationNotification } from '@/lib/push-notifications'
+import { createAdminClient } from '@/lib/supabase/admin'
 
 export const runtime = 'nodejs'
 
@@ -93,23 +94,6 @@ export async function POST(request: Request) {
   try {
     formData = await request.formData()
   } catch {
-    after(async () => {
-      try {
-        await sendNewReservationNotification({
-          reservationId: hold.reservationId,
-          raffleId,
-          customerName,
-          numbers: hold.numbers,
-          totalAmount: hold.totalAmount,
-          paymentMethod,
-        })
-      } catch (error) {
-        console.error(
-          'La reserva se creó, pero no se pudo enviar la notificación.',
-          error,
-        )
-      }
-    })
     return NextResponse.json(
       { error: 'No pudimos leer los datos enviados.' },
       { status: 400 },
@@ -291,6 +275,22 @@ export async function POST(request: Request) {
         error: 'No pudimos finalizar la reserva. Tus números fueron liberados.',
       },
       { status: 500 },
+    )
+  }
+
+  try {
+    await sendNewReservationNotification({
+      reservationId: hold.reservationId,
+      raffleId,
+      customerName,
+      numbers: hold.numbers,
+      totalAmount: hold.totalAmount,
+      paymentMethod,
+    })
+  } catch (error) {
+    console.error(
+      'La reserva se creó, pero no se pudo enviar la notificación.',
+      error,
     )
   }
 
