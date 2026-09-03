@@ -135,7 +135,7 @@ html {
 
 body {
   min-height: 100vh;
-  background: #ffe5f0;
+  background: #fdcae1;
 }
 
 button {
@@ -143,29 +143,29 @@ button {
 }
 
 ::selection {
-  background: rgba(197, 148, 170, 0.55);
-  color: #4d2f3b;
+  background: rgba(232, 142, 168, 0.55);
+  color: #4b2834;
 }
 
-/* Tema pastel de la rifa basado en la paleta elegida por Alondra */
+/* Tema pastel rosa basado en el color elegido por Alondra */
 .raffle-pastel {
-  --raffle-rose-deep: #8f6277;
-  --raffle-rose-medium: #c594aa;
+  --raffle-rose-deep: #b84b63;
+  --raffle-rose-medium: #e49aaf;
   --raffle-rose-main: #fdcae1;
-  --raffle-rose-soft: #ffe5f0;
-  --raffle-ink: #4d2f3b;
+  --raffle-rose-soft: #ffe7f0;
+  --raffle-ink: #4b283f;
 
   color: var(--raffle-ink) !important;
   background:
     radial-gradient(
       circle at top right,
-      rgba(197, 148, 170, 0.28),
-      transparent 32rem
+      rgba(244, 145, 178, 0.34),
+      transparent 30rem
     ),
     linear-gradient(
       180deg,
-      #fffafd 0%,
-      var(--raffle-rose-soft) 58%,
+      #fff8fb 0%,
+      var(--raffle-rose-soft) 48%,
       var(--raffle-rose-main) 100%
     );
 }
@@ -175,37 +175,37 @@ button {
 }
 
 .raffle-pastel [class~='bg-zinc-900/80'] {
-  background-color: rgba(255, 255, 255, 0.86) !important;
+  background-color: rgba(255, 255, 255, 0.87) !important;
 }
 
 .raffle-pastel [class~='bg-zinc-900/50'] {
-  background-color: rgba(255, 255, 255, 0.72) !important;
+  background-color: rgba(255, 255, 255, 0.74) !important;
 }
 
 .raffle-pastel [class~='bg-black/30'] {
-  background-color: rgba(255, 248, 252, 0.9) !important;
+  background-color: rgba(255, 246, 250, 0.92) !important;
 }
 
 .raffle-pastel [class~='bg-white/5'],
 .raffle-pastel [class~='bg-white/[0.04]'] {
-  background-color: rgba(253, 202, 225, 0.42) !important;
+  background-color: rgba(253, 202, 225, 0.5) !important;
 }
 
 .raffle-pastel [class~='bg-red-500/10'],
 .raffle-pastel [class~='bg-red-500/20'] {
-  background-color: rgba(253, 202, 225, 0.58) !important;
+  background-color: rgba(253, 202, 225, 0.66) !important;
 }
 
 .raffle-pastel [class~='border-white/10'],
 .raffle-pastel [class~='border-white/15'] {
-  border-color: rgba(143, 98, 119, 0.25) !important;
+  border-color: rgba(184, 75, 99, 0.24) !important;
 }
 
 .raffle-pastel [class~='border-red-500/20'],
 .raffle-pastel [class~='border-red-500/25'],
 .raffle-pastel [class~='border-red-500/30'],
 .raffle-pastel [class~='border-red-500/60'] {
-  border-color: rgba(143, 98, 119, 0.42) !important;
+  border-color: rgba(184, 75, 99, 0.42) !important;
 }
 
 .raffle-pastel .text-white:not(button) {
@@ -215,19 +215,19 @@ button {
 .raffle-pastel .text-zinc-100,
 .raffle-pastel .text-zinc-200,
 .raffle-pastel .text-zinc-300 {
-  color: #593745 !important;
+  color: #58323e !important;
 }
 
 .raffle-pastel .text-zinc-400 {
-  color: #765364 !important;
+  color: #7d4d5b !important;
 }
 
 .raffle-pastel .text-zinc-500 {
-  color: #8f6b7b !important;
+  color: #9e6877 !important;
 }
 
 .raffle-pastel .text-zinc-600 {
-  color: #a58392 !important;
+  color: #b68190 !important;
 }
 
 .raffle-pastel .text-red-400 {
@@ -235,11 +235,11 @@ button {
 }
 
 .raffle-pastel .text-red-300 {
-  color: #7b5064 !important;
+  color: #a73f59 !important;
 }
 
 .raffle-pastel .text-red-200 {
-  color: #694254 !important;
+  color: #8f344b !important;
 }
 
 .raffle-pastel .bg-red-600,
@@ -248,7 +248,7 @@ button {
 }
 
 .raffle-pastel [class~='hover:bg-red-500']:hover {
-  background-color: #7b5064 !important;
+  background-color: #9d3e55 !important;
 }
 
 .raffle-pastel input {
@@ -256,5 +256,30 @@ button {
 }
 
 .raffle-pastel input::placeholder {
-  color: #a58392;
+  color: #b68190;
+}
+
+.raffle-pastel .raffle-number-selected {
+  color: #ffffff !important;
+  background-color: #d94f7d !important;
+  border-color: #bd315e !important;
+  box-shadow: 0 8px 20px rgba(189, 49, 94, 0.32) !important;
+}
+
+.raffle-pastel .raffle-number-selected:hover {
+  background-color: #cb3e6c !important;
+}
+
+.raffle-pastel button[aria-pressed='true'] {
+  background: #df4777 !important;
+  background-color: #df4777 !important;
+  border: 2px solid #bd315e !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+  box-shadow: 0 8px 20px rgba(189, 49, 94, 0.35) !important;
+}
+
+.raffle-pastel button[aria-pressed='true'] svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
 }
