@@ -12,6 +12,7 @@ import {
   WalletCards,
   X,
 } from 'lucide-react'
+import { AdminAutoRefresh } from '@/components/admin/admin-auto-refresh'
 
 import { Button } from '@/components/ui/button'
 import { createAdminClient } from '@/lib/supabase/admin'
@@ -387,6 +388,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
   return (
     <main className="raffle-pastel min-h-screen px-4 py-6 text-white sm:px-6">
+      <AdminAutoRefresh />
       <AuthToast
         key={params.notification ?? params.toast ?? params.success}
         message={params.toast ?? params.success}
