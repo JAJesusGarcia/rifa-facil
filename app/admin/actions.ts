@@ -64,7 +64,9 @@ export async function loginAction(formData: FormData) {
     )
   }
 
-  redirect('/admin')
+  redirect(
+    `/admin?toast=${encodeURIComponent('Sesión iniciada correctamente.')}`,
+  )
 }
 
 export async function logoutAction() {
@@ -72,7 +74,9 @@ export async function logoutAction() {
 
   await supabase.auth.signOut()
 
-  redirect('/admin/login')
+  redirect(
+    `/admin/login?toast=${encodeURIComponent('Sesión cerrada correctamente.')}`,
+  )
 }
 
 export async function confirmReservationAction(formData: FormData) {

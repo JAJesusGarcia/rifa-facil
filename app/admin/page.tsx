@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/types/database'
+import { AuthToast } from '@/components/auth-toast'
 
 import {
   confirmReservationAction,
@@ -46,6 +47,7 @@ interface AdminPageProps {
     success?: string
     error?: string
     status?: string
+    toast?: string
   }>
 }
 
@@ -383,6 +385,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
   return (
     <main className="raffle-pastel min-h-screen px-4 py-6 text-white sm:px-6">
+      <AuthToast message={params.toast} />
       <div className="mx-auto w-full max-w-6xl">
         <header className="flex flex-col gap-4 border-b border-white/10 pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
