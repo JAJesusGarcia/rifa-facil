@@ -14,6 +14,18 @@ const loginSchema = z.object({
 
 const reservationIdSchema = z.string().uuid()
 
+const resetRaffleSchema = z.object({
+  raffleId: z.string().uuid(),
+  confirmation: z.literal('REINICIAR'),
+})
+
+const resetRaffleResponseSchema = z.object({
+  raffleId: z.string().uuid(),
+  numbersReset: z.coerce.number(),
+  reservationsDeleted: z.coerce.number(),
+  storagePaths: z.array(z.string()),
+})
+
 function adminUrl(type: 'success' | 'error', message: string) {
   const params = new URLSearchParams({
     [type]: message,
@@ -44,6 +56,31 @@ async function userOwnsReservation(reservationId: string) {
     .maybeSingle()
 
   return Boolean(reservation)
+}
+
+async function getRaffleOwnerId(raffleId: string) {
+  const supabase = await createClient()
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) {
+    return null
+  }
+
+  const { data: raffle, error } = await supabase
+    .from('raffles')
+    .select('id')
+    .eq('id', raffleId)
+    .eq('owner_id', user.id)
+    .maybeSingle()
+
+  if (error || !raffle) {
+    return null
+  }
+
+  return user.id
 }
 
 export async function loginAction(formData: FormData) {
@@ -159,4 +196,69 @@ export async function rejectReservationAction(formData: FormData) {
   revalidatePath('/admin')
 
   redirect(adminUrl('success', 'Reserva rechazada y números liberados.'))
+}
+
+export async function resetRaffleAction(formData: FormData) {
+  const parsed = resetRaffleSchema.safeParse({
+    raffleId: formData.get('raffleId'),
+    confirmation: formData.get('confirmation'),
+  })
+
+  if (!parsed.success) {
+    redirect(
+      adminUrl('error', 'Para reiniciar la rifa tenés que escribir REINICIAR.'),
+    )
+  }
+
+  const ownerId = await getRaffleOwnerId(parsed.data.raffleId)
+
+  if (!ownerId) {
+    redirect(adminUrl('error', 'No tenés acceso para reiniciar esta rifa.'))
+  }
+
+  const admin = createAdminClient()
+
+  const { data, error } = await admin.rpc('reset_raffle', {
+    p_raffle_id: parsed.data.raffleId,
+    p_owner_id: ownerId,
+  })
+
+  if (error) {
+    console.error('No se pudo reiniciar la rifa.', {
+      message: error.message,
+    })
+
+    redirect(
+      adminUrl('error', 'No se pudo reiniciar la rifa. Intentá nuevamente.'),
+    )
+  }
+
+  const parsedResult = resetRaffleResponseSchema.safeParse(data)
+  let storageCleanupFailed = false
+
+  if (parsedResult.success && parsedResult.data.storagePaths.length > 0) {
+    const { error: storageError } = await admin.storage
+      .from('payment-proofs')
+      .remove(parsedResult.data.storagePaths)
+
+    if (storageError) {
+      storageCleanupFailed = true
+
+      console.error('No se pudieron eliminar algunos comprobantes.', {
+        message: storageError.message,
+      })
+    }
+  }
+
+  revalidatePath('/')
+  revalidatePath('/admin')
+
+  redirect(
+    adminUrl(
+      'success',
+      storageCleanupFailed
+        ? 'La rifa volvió a cero, aunque algunos archivos deberán eliminarse manualmente.'
+        : 'La rifa volvió a cero correctamente.',
+    ),
+  )
 }

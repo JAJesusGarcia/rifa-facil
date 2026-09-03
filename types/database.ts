@@ -336,6 +336,10 @@ export type Database = {
         Args: { p_raffle_id?: string }
         Returns: number
       }
+      reset_raffle: {
+        Args: { p_owner_id: string; p_raffle_id: string }
+        Returns: Json
+      }
       submit_raffle_reservation: {
         Args: {
           p_lookup_token: string
