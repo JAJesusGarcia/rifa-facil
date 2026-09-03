@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import {
   Banknote,
-  Check,
   Clock3,
   ExternalLink,
   FileText,
@@ -10,7 +9,6 @@ import {
   Phone,
   Ticket,
   WalletCards,
-  X,
 } from 'lucide-react'
 import { AdminAutoRefresh } from '@/components/admin/admin-auto-refresh'
 
@@ -20,7 +18,7 @@ import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/types/database'
 import { AuthToast } from '@/components/auth-toast'
 import { PushNotificationButton } from '@/components/admin/push-notification-button'
-
+import { ReservationActionButton } from '@/components/admin/reservation-action-button'
 import {
   confirmReservationAction,
   logoutAction,
@@ -672,13 +670,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                               value={reservation.id}
                             />
 
-                            <Button
-                              type="submit"
-                              className="w-full bg-emerald-600 text-white hover:bg-emerald-500 lg:w-auto"
-                            >
-                              <Check className="size-4" aria-hidden="true" />
-                              Confirmar pago
-                            </Button>
+                            <ReservationActionButton action="confirm" />
                           </form>
                         ) : null}
 
@@ -701,14 +693,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                               className="h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-black/30 px-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-red-500"
                             />
 
-                            <Button
-                              type="submit"
-                              variant="outline"
-                              className="border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20"
-                            >
-                              <X className="size-4" aria-hidden="true" />
-                              Rechazar
-                            </Button>
+                            <ReservationActionButton action="reject" />
                           </form>
                         ) : null}
                       </div>
