@@ -220,7 +220,7 @@ export function RaffleExperience({
                       style={{
                         transformStyle: 'preserve-3d',
                         transform: showAlternatePhoto
-                          ? 'rotateY(540deg)'
+                          ? 'rotateY(180deg)'
                           : 'rotateY(0deg)',
                         transition:
                           'transform 1400ms cubic-bezier(0.4, 0, 0.2, 1)',
