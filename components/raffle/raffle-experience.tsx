@@ -51,6 +51,7 @@ export function RaffleExperience({
   const [numbers, setNumbers] = useState(initialNumbers)
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([])
   const [aliasCopied, setAliasCopied] = useState(false)
+  const [showAlternatePhoto, setShowAlternatePhoto] = useState(false)
 
   const currencyFormatter = useMemo(
     () =>
@@ -200,16 +201,73 @@ export function RaffleExperience({
 
               <div className="relative">
                 <div className="mb-6 flex items-center gap-4">
-                  <div className="relative size-16 shrink-0 overflow-hidden rounded-full border-2 border-red-500/60 bg-zinc-800 shadow-lg shadow-red-950/40 sm:size-25">
-                    <Image
-                      src="/images/alondra2.png"
-                      alt={`Foto de ${raffle.organizer_name}`}
-                      fill
-                      priority
-                      className="object-cover object-center"
-                      sizes="80px"
-                    />
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowAlternatePhoto((current) => !current)}
+                    aria-label={
+                      showAlternatePhoto
+                        ? 'Mostrar primera foto de Alondra'
+                        : 'Mostrar otra foto de Alondra'
+                    }
+                    title="Tocá para ver otra foto"
+                    className="group relative size-20 shrink-0 cursor-pointer rounded-full focus-visible:ring-2 focus-visible:ring-[#d86983] focus-visible:ring-offset-2 focus-visible:outline-none sm:size-24"
+                    style={{
+                      perspective: '1600px',
+                    }}
+                  >
+                    <span
+                      className="absolute inset-0 rounded-full border-2 border-red-500/60 bg-zinc-800 shadow-lg shadow-red-950/40"
+                      style={{
+                        transformStyle: 'preserve-3d',
+                        transform: showAlternatePhoto
+                          ? 'rotateY(540deg)'
+                          : 'rotateY(0deg)',
+                        transition:
+                          'transform 1400ms cubic-bezier(0.4, 0, 0.2, 1)',
+                        willChange: 'transform',
+                      }}
+                    >
+                      <span
+                        className="absolute inset-0 overflow-hidden rounded-full"
+                        style={{
+                          backfaceVisibility: 'hidden',
+                          WebkitBackfaceVisibility: 'hidden',
+                        }}
+                      >
+                        <Image
+                          src="/images/alondra2.png"
+                          alt={`Foto de ${raffle.organizer_name}`}
+                          fill
+                          priority
+                          className="object-cover"
+                          style={{
+                            objectPosition: '50% 0%',
+                          }}
+                          sizes="(max-width: 639px) 80px, 96px"
+                        />
+                      </span>
+
+                      <span
+                        className="absolute inset-0 overflow-hidden rounded-full"
+                        style={{
+                          transform: 'rotateY(180deg)',
+                          backfaceVisibility: 'hidden',
+                          WebkitBackfaceVisibility: 'hidden',
+                        }}
+                      >
+                        <Image
+                          src="/images/alondra.png"
+                          alt={`Otra foto de ${raffle.organizer_name}`}
+                          fill
+                          className="object-cover"
+                          style={{
+                            objectPosition: '50% 35%',
+                          }}
+                          sizes="(max-width: 639px) 80px, 96px"
+                        />
+                      </span>
+                    </span>
+                  </button>
 
                   <div>
                     <p className="text-lg font-black text-white">
