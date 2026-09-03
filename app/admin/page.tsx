@@ -23,7 +23,9 @@ import {
   confirmReservationAction,
   logoutAction,
   rejectReservationAction,
+  resetRaffleAction,
 } from './actions'
+import { ResetRaffleControls } from '@/components/admin/reset-raffle-controls'
 
 type ReservationStatus = Database['public']['Enums']['reservation_status']
 
@@ -564,138 +566,142 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                 return (
                   <article
                     key={reservation.id}
-                    className="rounded-3xl border border-white/10 bg-zinc-900/80 p-5"
+                    className="overflow-hidden rounded-2xl border border-white/10 bg-zinc-900/80 shadow-sm"
                   >
-                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-xl font-black">
-                            {reservation.customer_name}
-                          </h3>
+                    <div className="p-4 sm:p-5">
+                      <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:gap-4">
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <h3 className="truncate text-lg font-black sm:text-xl">
+                              {reservation.customer_name}
+                            </h3>
 
-                          <span
-                            className={`rounded-full border px-2.5 py-1 text-xs font-bold ${getStatusClasses(
-                              reservation.status,
-                            )}`}
-                          >
-                            {statusLabels[reservation.status]}
-                          </span>
+                            <span
+                              className={`rounded-full border px-2.5 py-1 text-xs font-bold ${getStatusClasses(
+                                reservation.status,
+                              )}`}
+                            >
+                              {statusLabels[reservation.status]}
+                            </span>
+                          </div>
                         </div>
 
-                        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-400">
+                        <div className="shrink-0 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-right">
+                          <p className="text-xs text-zinc-500">Importe</p>
+
+                          <p className="text-xl font-black text-red-400 sm:text-2xl">
+                            {formatCurrency(Number(reservation.total_amount))}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-400">
+                        <a
+                          href={whatsappUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          title="Abrir conversación en WhatsApp"
+                          aria-label={`Hablar con ${reservation.customer_name} por WhatsApp`}
+                          className="flex items-center gap-2 font-medium text-[#8b5361] underline-offset-4 transition hover:text-[#c65370] hover:underline"
+                        >
+                          <Phone className="size-4" aria-hidden="true" />
+                          {reservation.customer_whatsapp}
+                          <ExternalLink className="size-3" aria-hidden="true" />
+                        </a>
+
+                        <span className="flex items-center gap-2">
+                          {reservation.payment_method === 'transfer' ? (
+                            <WalletCards
+                              className="size-4"
+                              aria-hidden="true"
+                            />
+                          ) : (
+                            <Banknote className="size-4" aria-hidden="true" />
+                          )}
+
+                          {reservation.payment_method === 'transfer'
+                            ? 'Transferencia'
+                            : 'Efectivo'}
+                        </span>
+
+                        <span className="flex items-center gap-2">
+                          <Clock3 className="size-4" aria-hidden="true" />
+                          {formatDate(reservation.created_at)}
+                        </span>
+                      </div>
+
+                      <div className="mt-4 flex flex-col gap-3 rounded-xl border border-white/10 bg-black/30 p-3 sm:flex-row sm:items-end sm:justify-between">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="mr-1 text-xs font-semibold text-zinc-400">
+                            Números
+                          </p>
+
+                          {numbers.map((number) => (
+                            <span
+                              key={number}
+                              className="flex size-9 items-center justify-center rounded-lg border border-white/10 bg-black/30 text-sm font-black"
+                            >
+                              {formatNumber(number)}
+                            </span>
+                          ))}
+                        </div>
+
+                        {reservation.proofUrl ? (
                           <a
-                            href={whatsappUrl}
+                            href={reservation.proofUrl}
                             target="_blank"
-                            rel="noopener noreferrer"
-                            title="Abrir conversación en WhatsApp"
-                            aria-label={`Hablar con ${reservation.customer_name} por WhatsApp`}
-                            className="flex items-center gap-2 font-medium text-[#8b5361] underline-offset-4 transition hover:text-[#c65370] hover:underline"
+                            rel="noreferrer"
+                            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-zinc-200 transition hover:bg-white/10"
                           >
-                            <Phone className="size-4" aria-hidden="true" />
-                            {reservation.customer_whatsapp}
+                            <FileText className="size-4" aria-hidden="true" />
+                            Ver comprobante
                             <ExternalLink
-                              className="size-3"
+                              className="size-3.5"
                               aria-hidden="true"
                             />
                           </a>
-
-                          <span className="flex items-center gap-2">
-                            {reservation.payment_method === 'transfer' ? (
-                              <WalletCards
-                                className="size-4"
-                                aria-hidden="true"
-                              />
-                            ) : (
-                              <Banknote className="size-4" aria-hidden="true" />
-                            )}
-
-                            {reservation.payment_method === 'transfer'
-                              ? 'Transferencia'
-                              : 'Efectivo'}
-                          </span>
-
-                          <span className="flex items-center gap-2">
-                            <Clock3 className="size-4" aria-hidden="true" />
-                            {formatDate(reservation.created_at)}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="lg:text-right">
-                        <p className="text-sm text-zinc-500">Importe</p>
-
-                        <p className="text-2xl font-black text-red-400">
-                          {formatCurrency(Number(reservation.total_amount))}
-                        </p>
+                        ) : null}
                       </div>
                     </div>
-
-                    <div className="mt-5">
-                      <p className="text-sm font-semibold text-zinc-400">
-                        Números
-                      </p>
-
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {numbers.map((number) => (
-                          <span
-                            key={number}
-                            className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-black/30 text-sm font-black"
-                          >
-                            {formatNumber(number)}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {reservation.proofUrl ? (
-                      <a
-                        href={reservation.proofUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="mt-5 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-semibold text-zinc-200 transition hover:bg-white/10"
-                      >
-                        <FileText className="size-4" aria-hidden="true" />
-                        Ver comprobante
-                        <ExternalLink className="size-3.5" aria-hidden="true" />
-                      </a>
-                    ) : null}
 
                     {canConfirm || canReject ? (
-                      <div className="mt-5 grid gap-3 border-t border-white/10 pt-5 lg:grid-cols-[auto_1fr]">
-                        {canConfirm ? (
-                          <form action={confirmReservationAction}>
-                            <input
-                              type="hidden"
-                              name="reservationId"
-                              value={reservation.id}
-                            />
+                      <div className="border-t border-white/10 bg-black/30 p-4 sm:p-5">
+                        <div className="grid gap-3 lg:grid-cols-[auto_1fr]">
+                          {canConfirm ? (
+                            <form action={confirmReservationAction}>
+                              <input
+                                type="hidden"
+                                name="reservationId"
+                                value={reservation.id}
+                              />
 
-                            <ReservationActionButton action="confirm" />
-                          </form>
-                        ) : null}
+                              <ReservationActionButton action="confirm" />
+                            </form>
+                          ) : null}
 
-                        {canReject ? (
-                          <form
-                            action={rejectReservationAction}
-                            className="flex flex-col gap-2 sm:flex-row"
-                          >
-                            <input
-                              type="hidden"
-                              name="reservationId"
-                              value={reservation.id}
-                            />
+                          {canReject ? (
+                            <form
+                              action={rejectReservationAction}
+                              className="flex flex-col gap-2 sm:flex-row"
+                            >
+                              <input
+                                type="hidden"
+                                name="reservationId"
+                                value={reservation.id}
+                              />
 
-                            <input
-                              name="reason"
-                              type="text"
-                              maxLength={240}
-                              placeholder="Motivo del rechazo (opcional)"
-                              className="h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-black/30 px-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-red-500"
-                            />
+                              <input
+                                name="reason"
+                                type="text"
+                                maxLength={240}
+                                placeholder="Motivo del rechazo (opcional)"
+                                className="h-10 min-w-0 flex-1 rounded-lg border border-white/10 bg-black/30 px-3 text-sm text-white outline-none placeholder:text-zinc-600 focus:border-red-500"
+                              />
 
-                            <ReservationActionButton action="reject" />
-                          </form>
-                        ) : null}
+                              <ReservationActionButton action="reject" />
+                            </form>
+                          ) : null}
+                        </div>
                       </div>
                     ) : null}
                   </article>
@@ -704,6 +710,32 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             </div>
           )}
         </section>
+        {raffles[0] ? (
+          <section className="mt-8 rounded-3xl border border-[#c594aa] bg-white/70 p-5 sm:p-6">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+              <div className="max-w-xl">
+                <p className="text-sm font-bold tracking-[0.14em] text-[#8f6277] uppercase">
+                  Zona sensible
+                </p>
+
+                <h2 className="mt-1 text-xl font-black text-[#4d2f3b]">
+                  Volver la rifa a cero
+                </h2>
+
+                <p className="mt-2 text-sm leading-6 text-[#765364]">
+                  Elimina toda la actividad registrada y vuelve a dejar los
+                  números del 00 al 99 disponibles.
+                </p>
+              </div>
+
+              <form action={resetRaffleAction} className="w-full sm:max-w-md">
+                <input type="hidden" name="raffleId" value={raffles[0].id} />
+
+                <ResetRaffleControls />
+              </form>
+            </div>
+          </section>
+        ) : null}
       </div>
     </main>
   )

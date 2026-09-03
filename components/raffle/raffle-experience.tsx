@@ -171,7 +171,7 @@ export function RaffleExperience({
       <div className="mx-auto w-full max-w-5xl px-4 py-5 sm:px-6 sm:py-8">
         <header className="mb-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-red-600 shadow-lg shadow-red-950/40">
+            <div className="flex size-10 items-center justify-center rounded-xl border border-[#d94f7d] bg-[#e76791] text-white shadow-lg shadow-[#d94f7d]/30">
               <Ticket className="size-5" aria-hidden="true" />
             </div>
 
@@ -430,9 +430,7 @@ export function RaffleExperience({
                   onClick={() => toggleNumber(raffleNumber)}
                   className={[
                     'aspect-square rounded-xl border text-sm font-black transition duration-200 sm:text-base',
-                    isSelected
-                      ? 'scale-95 border-red-400 bg-red-500 text-white shadow-lg shadow-red-950/50'
-                      : '',
+                    isSelected ? 'scale-95' : '',
                     isAvailable && !isSelected
                       ? 'border-white/10 bg-white/5 text-zinc-100 hover:-translate-y-0.5 hover:border-[#d86480]/60 hover:bg-[#f7dce3]'
                       : '',
