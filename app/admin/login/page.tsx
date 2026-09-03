@@ -27,7 +27,7 @@ export default async function AdminLoginPage({
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#0b0b0d] px-4 text-white">
+    <main className="raffle-pastel flex min-h-screen items-center justify-center px-4 text-white">
       <section className="w-full max-w-md rounded-3xl border border-white/10 bg-zinc-900 p-6 shadow-2xl sm:p-8">
         <div className="flex items-center gap-3">
           <div className="flex size-12 items-center justify-center rounded-2xl bg-red-600">

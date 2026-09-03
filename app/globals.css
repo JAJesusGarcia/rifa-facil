@@ -146,3 +146,95 @@ button {
   background: rgba(239, 68, 68, 0.45);
   color: white;
 }
+
+/* Tema público de la rifa inspirado en el flyer de Alondra */
+.raffle-pastel {
+  color: #442b33 !important;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(239, 190, 201, 0.32),
+      transparent 32rem
+    ),
+    linear-gradient(180deg, #fffafb 0%, #fceff2 55%, #f9e7ec 100%);
+}
+
+.raffle-pastel .bg-zinc-900 {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+}
+
+.raffle-pastel [class~='bg-zinc-900/80'] {
+  background-color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.raffle-pastel [class~='bg-black/30'] {
+  background-color: rgba(255, 248, 250, 0.88) !important;
+}
+
+.raffle-pastel [class~='bg-white/5'],
+.raffle-pastel [class~='bg-white/[0.04]'] {
+  background-color: rgba(242, 209, 218, 0.34) !important;
+}
+
+.raffle-pastel [class~='border-white/10'],
+.raffle-pastel [class~='border-white/15'] {
+  border-color: rgba(151, 77, 95, 0.2) !important;
+}
+
+.raffle-pastel .text-white:not(button) {
+  color: #3f2830 !important;
+}
+
+.raffle-pastel .text-zinc-100,
+.raffle-pastel .text-zinc-200,
+.raffle-pastel .text-zinc-300 {
+  color: #553941 !important;
+}
+
+.raffle-pastel .text-zinc-400 {
+  color: #795d65 !important;
+}
+
+.raffle-pastel .text-zinc-500 {
+  color: #92747d !important;
+}
+
+.raffle-pastel .text-zinc-600 {
+  color: #a4868e !important;
+}
+
+.raffle-pastel .text-red-400 {
+  color: #c6536c !important;
+}
+
+.raffle-pastel .text-red-300 {
+  color: #b84b63 !important;
+}
+
+.raffle-pastel .text-red-200 {
+  color: #934457 !important;
+}
+
+.raffle-pastel .bg-red-600 {
+  background-color: #c6536c !important;
+}
+
+.raffle-pastel .bg-red-500 {
+  background-color: #d9657e !important;
+}
+
+.raffle-pastel [class~='hover:bg-red-500']:hover {
+  background-color: #b94660 !important;
+}
+
+.raffle-pastel input {
+  color: #442b33;
+}
+
+.raffle-pastel input::placeholder {
+  color: #a98c94;
+}
+
+.raffle-pastel [class~='bg-zinc-900/50'] {
+  background-color: rgba(255, 255, 255, 0.68) !important;
+}

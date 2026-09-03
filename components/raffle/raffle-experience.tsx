@@ -166,7 +166,7 @@ export function RaffleExperience({
   }
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#0b0b0d] font-sans text-white">
+    <main className="raffle-pastel min-h-screen overflow-x-hidden font-sans text-white">
       <div className="mx-auto w-full max-w-5xl px-4 py-5 sm:px-6 sm:py-8">
         <header className="mb-5 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -182,8 +182,8 @@ export function RaffleExperience({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300">
-            <span className="size-2 animate-pulse rounded-full bg-emerald-400" />
+          <div className="flex shrink-0 items-center gap-2 rounded-full border border-emerald-600/40 bg-emerald-50 px-3.5 py-2 text-sm font-bold text-emerald-800 shadow-sm">
+            <span className="size-2.5 animate-pulse rounded-full bg-emerald-600" />
             Rifa activa
           </div>
         </header>
@@ -195,8 +195,8 @@ export function RaffleExperience({
             </div>
 
             <div className="relative order-1 overflow-hidden p-6 sm:p-8 md:order-2">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(220,38,38,0.25),_transparent_48%)]" />
-              <div className="absolute -right-24 -bottom-24 size-72 rounded-full bg-red-600/10 blur-3xl" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(234,167,182,0.36),_transparent_52%)]" />
+              <div className="absolute -right-24 -bottom-24 size-72 rounded-full bg-pink-300/20 blur-3xl" />
 
               <div className="relative">
                 <div className="mb-6 flex items-center gap-4">
