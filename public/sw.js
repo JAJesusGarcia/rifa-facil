@@ -14,15 +14,48 @@ self.addEventListener('push', (event) => {
   const title = payload.title || 'Rifa Fácil'
 
   event.waitUntil(
-    self.registration.showNotification(title, {
-      body: payload.body || 'Tenés una nueva reserva para revisar.',
-      data: {
-        url: payload.url || '/admin',
-      },
-      tag: payload.tag || 'raffle-notification',
-      renotify: true,
-    }),
+    (async () => {
+      const windowClients = await self.clients.matchAll({
+        type: 'window',
+        includeUncontrolled: true,
+      })
+
+      const visibleAdminClient = windowClients.find((client) => {
+        const clientUrl = new URL(client.url)
+
+        return (
+          clientUrl.origin === self.location.origin &&
+          clientUrl.pathname.startsWith('/admin') &&
+          client.visibilityState === 'visible'
+        )
+      })
+
+      if (visibleAdminClient) {
+        visibleAdminClient.postMessage({
+          type: 'raffle:new-reservation',
+        })
+      }
+
+      await self.registration.showNotification(title, {
+        body: payload.body || 'Tenés una nueva reserva para revisar.',
+        data: {
+          url: payload.url || '/admin',
+        },
+        tag: payload.tag || 'raffle-notification',
+        renotify: true,
+        silent: Boolean(visibleAdminClient),
+        vibrate: [180, 90, 180],
+      })
+    })(),
   )
+})
+
+self.addEventListener('install', () => {
+  self.skipWaiting()
+})
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(self.clients.claim())
 })
 
 self.addEventListener('notificationclick', (event) => {

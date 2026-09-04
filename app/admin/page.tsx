@@ -17,6 +17,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 import type { Database } from '@/types/database'
 import { AuthToast } from '@/components/auth-toast'
+import { NotificationSoundButton } from '@/components/admin/notification-sound-button'
 import { PushNotificationButton } from '@/components/admin/push-notification-button'
 import { ReservationActionButton } from '@/components/admin/reservation-action-button'
 import {
@@ -442,7 +443,10 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             </p>
           </div>
 
-          <PushNotificationButton />
+          <div className="flex flex-wrap items-center gap-2">
+            <PushNotificationButton />
+            <NotificationSoundButton />
+          </div>
         </section>
 
         {params.error ? (
