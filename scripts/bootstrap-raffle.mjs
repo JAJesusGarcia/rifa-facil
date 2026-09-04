@@ -109,7 +109,7 @@ async function bootstrap() {
         bundle_price: 10000,
         total_numbers: 100,
         max_numbers_per_reservation: 2,
-        reservation_duration_minutes: 30,
+        reservation_duration_minutes: 120,
         draw_description:
           'Sorteo por Lotería Nacional Nocturna al finalizar la venta.',
         status: 'active',
